@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>score billar en linea</title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    />
+  </head>
+  <body>
+    <div class="container_img">
+      <img src="logo_Billar_en_linea.png" alt="logo de billar en linea" />
+    </div>
+    <div class="main_container">
+      <div id="title">BILLAR EN LINEA</div>
+      <div class="jugadores">
+        <div class="data-container">
+          <label class="title_white">HANDICAP</label>
+          <input
+            type="number"
+            class="input_handicap input_White"
+            id="handicapWhitePlayer"
+            placeholder="0"
+          />
+        </div>
+        <div class="data-container">
+          <label class="title_white">JUGADOR BLANCO</label>
+          <input
+            type="text"
+            id="nameWhitePlayer"
+            class="input_player input_White"
+            placeholder="Name Player"
+          />
+        </div>
+        <button id="Exchangebutton" class="btn-1">intercambiar</button>
+        <div class="data-container">
+          <label class="title_Yellow">JUGADOR AMARILLO</label>
+          <input
+            type="text"
+            id="nameYellowPlayer"
+            class="input_player input_yellow"
+            placeholder="Name Player"
+          />
+        </div>
+        <div class="data-container">
+          <label class="title_Yellow">HANDICAP</label>
+          <input
+            type="number"
+            class="input_handicap input_yellow"
+            id="handicapYellowPlayer"
+            placeholder="0"
+          />
+        </div>
+      </div>
+
+      <div class="container_Marcador">
+        <div class="itent_marcador">
+          <button id="buttonWhitePlayerMarcador" class="btn-1">
+            Actualizar
+          </button>
+          <p id="whitePlayerMarcador">0</p>
+        </div>
+        <div class="itent_marcador">
+          <h3>BLANCO</h3>
+          <button id="increase_white" class="btn-2">
+            <img
+              src="icos/navegar-flecha-hacia-arriba.png"
+              alt="Chevron Up"
+              width="24"
+              height="15"
+            />
+          </button>
+          <p id="Point_White">0</p>
+          <button id="decrease_white" class="btn-2">
+            <img
+              src="icos/flecha-hacia-abajo-para-navegar.png"
+              alt="Chevron Up"
+              width="24"
+              height="15"
+            />
+          </button>
+        </div>
+        <div class="itent_marcador">
+          <h3>ENTRADAS</h3>
+          <button id="increase_entry" class="btn-2">
+            <img
+              src="icos/navegar-flecha-hacia-arriba.png"
+              alt="Chevron Up"
+              width="24"
+              height="15"
+            />
+          </button>
+          <p id="entry">1</p>
+          <button id="decrease_entry" class="btn-2">
+            <img
+              src="icos/flecha-hacia-abajo-para-navegar.png"
+              alt="Chevron Up"
+              width="24"
+              height="15"
+            />
+          </button>
+        </div>
+        <div class="itent_marcador">
+          <h3>AMARILLO</h3>
+          <button id="increase_yellow" class="btn-2">
+            <img
+              src="icos/navegar-flecha-hacia-arriba.png"
+              alt="Chevron Up"
+              width="24"
+              height="15"
+            />
+          </button>
+          <p id="Point_Yellow">0</p>
+          <button id="decrease_yellow" class="btn-2">
+            <img
+              src="icos/flecha-hacia-abajo-para-navegar.png"
+              alt="Chevron Up"
+              width="24"
+              height="15"
+            />
+          </button>
+        </div>
+        <div class="itent_marcador">
+          <button id="buttonYellowPlayerMarcador" class="btn-1">
+            Actualizar
+          </button>
+          <p id="yellowPlayerMarcador">0</p>
+        </div>
+      </div>
+      <div class="container_promedio">
+        <div class="container_itent_promedio">
+          <div>
+            <p>Serie</p>
+            <p id="highestserieWhite">0</p>
+          </div>
+          <div>
+            <p>Entrada</p>
+            <p id="entrada_serie_white">0</p>
+          </div>
+        </div>
+        <div class="container_itent_promedio item-doble">
+          <div class="itent_promedio">
+            <p>Promedio</p>
+            <p id="promedio_white">0</p>
+          </div>
+          <div class="itent_promedio itent_proedio_2">
+            <label for="setSelector">Set</label>
+            <select id="setSelector">
+              <option value="set1" selected>Set 1</option>
+              <option value="set2">Set 2</option>
+              <option value="set3">Set 3</option>
+              <option value="set4">Set 4</option>
+              <option value="set5">Set 5</option>
+            </select>
+          </div>
+          <div class="itent_promedio">
+            <p>Promedio</p>
+            <p id="promedio_yellow">0</p>
+          </div>
+        </div>
+        <div class="container_itent_promedio">
+          <div>
+            <p>Serie</p>
+            <p id="highestserieYellow">0</p>
+          </div>
+          <div>
+            <p>Entrada</p>
+            <p id="entrada_serie_yellow">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="resetButton">
+        <div>
+          <button id="resetButtonSet" class="btn-3">Reiniciar set</button>
+        </div>
+        <div>
+          <button id="resetButtonMarcador" class="btn-3">Reiniciar marcador</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cargar módulos en orden correcto -->
+    <script src="utils/dataManager.js"></script>
+    <script src="utils/playerManager.js"></script>
+    <script src="utils/counterManager.js"></script>
+    <script src="utils/scoreManager.js"></script>
+    <script src="utils/statsManager.js"></script>
+    <script src="utils/modalManager.js"></script>
+    <script src="utils/resetManager.js"></script>
+    
+    <!-- Archivo principal de orquestación -->
+    <script src="contador.js"></script>
+  </body>
+</html>
