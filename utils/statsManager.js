@@ -41,7 +41,7 @@ const StatsManager = (() => {
       "whitePlayerMarcador",
       "Point_White",
       "entry",
-      "promedio_white",
+      "promedio_white_tabla",
       "promedio_blanco"
     );
   }
@@ -54,7 +54,7 @@ const StatsManager = (() => {
       "yellowPlayerMarcador",
       "Point_Yellow",
       "entry",
-      "promedio_yellow",
+      "promedio_yellow_tabla",
       "promedio_amarillo"
     );
   }

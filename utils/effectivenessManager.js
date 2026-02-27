@@ -18,9 +18,12 @@ const EffectivenessManager = (() => {
    * Cargar estado anterior desde memoria
    */
   function loadPreviousState() {
+    const entryElement = document.getElementById("entry");
     const white = parseInt(document.getElementById("Point_White")?.textContent || 0, 10);
     const yellow = parseInt(document.getElementById("Point_Yellow")?.textContent || 0, 10);
-    const entries = parseInt(document.getElementById("entry")?.textContent || 0, 10);
+    const entries = parseInt(entryElement?.textContent || 0, 10);
+
+    console.log(`📖 loadPreviousState() leyendo del DOM: entry=${entries}, white=${white}, yellow=${yellow}`);
 
     previousState = {
       whitePoints: white,
@@ -28,18 +31,24 @@ const EffectivenessManager = (() => {
       entries: entries,
       timestamp: Date.now()
     };
+    
+    console.log(`📋 EffectivenessManager inicializado - Previous State: entries=${entries}, white=${white}, yellow=${yellow}`);
   }
 
   /**
    * Obtiene el estado actual
    */
   function getCurrentState() {
-    return {
+    const currentState = {
       whitePoints: parseInt(document.getElementById("Point_White")?.textContent || 0, 10),
       yellowPoints: parseInt(document.getElementById("Point_Yellow")?.textContent || 0, 10),
       entries: parseInt(document.getElementById("entry")?.textContent || 0, 10),
       timestamp: Date.now()
     };
+    
+    console.log(`📍 getCurrentState(): entries=${currentState.entries}, white=${currentState.whitePoints}, yellow=${currentState.yellowPoints}`);
+    
+    return currentState;
   }
 
   /**
@@ -54,6 +63,8 @@ const EffectivenessManager = (() => {
     const whitePointsAdded = currentState.whitePoints - previousState.whitePoints;
     const yellowPointsAdded = currentState.yellowPoints - previousState.yellowPoints;
     const entriesAdded = currentState.entries - previousState.entries;
+    
+    console.log(`🧮 Cálculo: entriesAdded = ${currentState.entries} (actual) - ${previousState.entries} (anterior) = ${entriesAdded}`);
     
     const isEffective = whitePointsAdded > 0 || yellowPointsAdded > 0;
     
@@ -137,7 +148,9 @@ const EffectivenessManager = (() => {
    * Actualiza el estado anterior (deber llamarse después de guardar una tacada)
    */
   function updatePreviousState() {
+    console.log("🔄 Actualizando previousState...");
     loadPreviousState();
+    console.log("✅ previousState actualizado:", previousState);
   }
 
   // Public API

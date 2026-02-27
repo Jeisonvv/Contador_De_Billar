@@ -129,23 +129,71 @@
           <p id="yellowPlayerMarcador">0</p>
         </div>
       </div>
-      <div class="container_promedio">
-        <div class="container_itent_promedio">
-          <div>
-            <p>Serie</p>
-            <p id="highestserieWhite">0</p>
+      
+      <div class="container_efectividad">
+        <div class="efectividad_header">
+          <h3>DATOS DE PARTIDA</h3>
+        </div>
+        <div class="efectividad_content">
+          <div class="efectividad_player">
+            <h4>BLANCO</h4>
+            <div class="efectividad_item">
+              <p class="label">Entradas Efetivas </p>
+              <p class="valor" id="efectivasBlanco">0</p>
+            </div>
+            <div class="efectividad_item">
+              <p class="label">EntradasFallidas</p>
+              <p class="valor" id="fallidasBlancoDetail">0</p>
+            </div>
+            <div class="efectividad_item">
+              <p class="label">porcentaje de efectividad</p>
+              <p class="valor" id="promedioBlanco">0%</p>
+            </div>
+            <div class="efectividad_item">
+              <p class="label">Promedio Puntos</p>
+              <p class="valor" id="promedio_white_tabla">0</p>
+            </div>
+            <div class="efectividad_item">
+              <p class="label">Serie</p>
+              <p class="valor" id="serieDataBlanco">Serie más alta <span id="highestserieWhiteDisplay">0</span> en la entrada <span id="entrada_serie_whiteDisplay">0</span></p>
+            </div>
           </div>
-          <div>
-            <p>Entrada</p>
-            <p id="entrada_serie_white">0</p>
+          <div class="efectividad_player">
+            <h4>AMARILLO</h4>
+            <div class="efectividad_item">
+              <p class="label">Efectivas</p>
+              <p class="valor" id="efectivasAmarillo">0</p>
+            </div>
+            <div class="efectividad_item">
+              <p class="label">Fallidas</p>
+              <p class="valor" id="fallidasAmarilloDetail">0</p>
+            </div>
+            <div class="efectividad_item">
+              <p class="label">porcentaje de efectividad</p>
+              <p class="valor" id="promedioAmarillo">0%</p>
+            </div>
+            <div class="efectividad_item">
+              <p class="label">Promedio Puntos</p>
+              <p class="valor" id="promedio_yellow_tabla">0</p>
+            </div>
+            <div class="efectividad_item">
+              <p class="label">Serie</p>
+              <p class="valor" id="serieDataAmarillo">Serie más alta <span id="highestserieYellowDisplay">0</span> en la entrada <span id="entrada_serie_yellowDisplay">0</span></p>
+            </div>
           </div>
         </div>
-        <div class="container_itent_promedio item-doble">
-          <div class="itent_promedio">
-            <p>Promedio</p>
-            <p id="promedio_white">0</p>
-          </div>
-          <div class="itent_promedio itent_proedio_2">
+      </div>
+      <!-- Contadores acumulativos ocultos para efectivas -->
+      <div id="efectivasStorage" style="display: none;">
+        <span id="totalEfectivasBlanco">0</span>
+        <span id="totalEfectivasAmarillo">0</span>
+      </div>
+
+      <div class="resetButton">
+        <div>
+          <button id="resetButtonSet" class="btn-3">Reiniciar set</button>
+        </div>
+        <div class="itent_promedio itent_proedio_2">
             <label for="setSelector">Set</label>
             <select id="setSelector">
               <option value="set1" selected>Set 1</option>
@@ -155,26 +203,6 @@
               <option value="set5">Set 5</option>
             </select>
           </div>
-          <div class="itent_promedio">
-            <p>Promedio</p>
-            <p id="promedio_yellow">0</p>
-          </div>
-        </div>
-        <div class="container_itent_promedio">
-          <div>
-            <p>Serie</p>
-            <p id="highestserieYellow">0</p>
-          </div>
-          <div>
-            <p>Entrada</p>
-            <p id="entrada_serie_yellow">0</p>
-          </div>
-        </div>
-      </div>
-      <div class="resetButton">
-        <div>
-          <button id="resetButtonSet" class="btn-3">Reiniciar set</button>
-        </div>
         <div>
           <button id="resetButtonMarcador" class="btn-3">Reiniciar marcador</button>
         </div>
@@ -189,6 +217,7 @@
     <script src="utils/statsManager.js"></script>
     <script src="utils/modalManager.js"></script>
     <script src="utils/resetManager.js"></script>
+    <script src="utils/effectivenessManager.js"></script>
     
     <!-- Archivo principal de orquestación -->
     <script src="contador.js"></script>

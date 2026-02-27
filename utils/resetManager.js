@@ -14,10 +14,14 @@ const ResetManager = (() => {
    * @param {number} valorReinicio - Valor a establecer
    */
   function resetCounters(ids, esGeneral, archivos, valorReinicio = 1) {
+    console.log(`🔧 resetCounters llamado: ids=${ids}, valorReinicio=${valorReinicio}`);
     ids.forEach((id, idx) => {
       window["valor_" + id] = valorReinicio;
       const el = document.getElementById(id);
-      if (el) el.textContent = valorReinicio;
+      if (el) {
+        el.textContent = valorReinicio;
+        console.log(`✅ Reset de ${id}: window.valor_${id}=${valorReinicio}, DOM=${el.textContent}`);
+      }
 
       if (archivos && archivos[idx]) {
         if (esGeneral) {
@@ -41,11 +45,36 @@ const ResetManager = (() => {
       return;
     }
 
+    console.log("🔄 INICIANDO resetSet()");
+
     // Reiniciar puntos a 0
     resetCounters(["Point_White", "Point_Yellow"], false, ["Point_White", "Point_Yellow"], 0);
 
     // Reiniciar entrada a 1
     resetCounters(["entry"], true, ["entry"], 1);
+
+    console.log("✅ resetSet completado, ahora inicializando EffectivenessManager");
+
+    // Reiniciar efectivas a 0
+    resetCounters(["totalEfectivasBlanco", "totalEfectivasAmarillo"], false, ["totalEfectivasBlanco", "totalEfectivasAmarillo"], 0);
+
+    // Reiniciar fallidas a 0
+    resetCounters(["noCarambola_White", "noCarambola_Yellow"], false, ["noCarambola_White", "noCarambola_Yellow"], 0);
+
+    // Limpiar display de efectividad inmediatamente
+    const efectivasBlancoDisplay = document.getElementById("efectivasBlanco");
+    const efectivasAmarilloDisplay = document.getElementById("efectivasAmarillo");
+    const fallidasBlancoDisplay = document.getElementById("fallidasBlancoDetail");
+    const fallidasAmarilloDisplay = document.getElementById("fallidasAmarilloDetail");
+    const promedioBlancoDom = document.getElementById("promedioBlanco");
+    const promedioAmarilloDom = document.getElementById("promedioAmarillo");
+    
+    if (efectivasBlancoDisplay) efectivasBlancoDisplay.textContent = 0;
+    if (efectivasAmarilloDisplay) efectivasAmarilloDisplay.textContent = 0;
+    if (fallidasBlancoDisplay) fallidasBlancoDisplay.textContent = 0;
+    if (fallidasAmarilloDisplay) fallidasAmarilloDisplay.textContent = 0;
+    if (promedioBlancoDom) promedioBlancoDom.textContent = "0%";
+    if (promedioAmarilloDom) promedioAmarilloDom.textContent = "0%";
 
     // Reiniciar marcadores acumulados a 0
     ["whitePlayerMarcador", "yellowPlayerMarcador"].forEach((id) => {
@@ -71,6 +100,17 @@ const ResetManager = (() => {
     // Recalcular promedios
     StatsManager.updateWhiteAverage();
     StatsManager.updateYellowAverage();
+
+    // Actualizar display de efectividad
+    if (window.CounterManager && window.CounterManager.updateEntradaDisplay) {
+      CounterManager.updateEntradaDisplay();
+    }
+
+    // Reiniciar EffectivenessManager para registrar correctamente la próxima entrada
+    if (window.EffectivenessManager && window.EffectivenessManager.initialize) {
+      EffectivenessManager.initialize();
+      console.log("✅ EffectivenessManager reiniciado después de resetear set");
+    }
   }
 
   /**
@@ -86,6 +126,32 @@ const ResetManager = (() => {
       document.getElementById("handicapWhitePlayer").value = "";
       document.getElementById("handicapYellowPlayer").value = "";
 
+      // Limpiar efectivas y fallidas acumuladas
+      const totalEfectivasBlanco = document.getElementById("totalEfectivasBlanco");
+      const totalEfectivasAmarillo = document.getElementById("totalEfectivasAmarillo");
+      const noCarambolaWhite = document.getElementById("noCarambola_White");
+      const noCarambolaYellow = document.getElementById("noCarambola_Yellow");
+      
+      if (totalEfectivasBlanco) totalEfectivasBlanco.textContent = 0;
+      if (totalEfectivasAmarillo) totalEfectivasAmarillo.textContent = 0;
+      if (noCarambolaWhite) noCarambolaWhite.textContent = 0;
+      if (noCarambolaYellow) noCarambolaYellow.textContent = 0;
+
+      // Limpiar display de efectividad
+      const efectivasBlancoDisplay = document.getElementById("efectivasBlanco");
+      const efectivasAmarilloDisplay = document.getElementById("efectivasAmarillo");
+      const fallidasBlancoDisplay = document.getElementById("fallidasBlancoDetail");
+      const fallidasAmarilloDisplay = document.getElementById("fallidasAmarilloDetail");
+      const promedioBlancoDom = document.getElementById("promedioBlanco");
+      const promedioAmarilloDom = document.getElementById("promedioAmarillo");
+      
+      if (efectivasBlancoDisplay) efectivasBlancoDisplay.textContent = 0;
+      if (efectivasAmarilloDisplay) efectivasAmarilloDisplay.textContent = 0;
+      if (fallidasBlancoDisplay) fallidasBlancoDisplay.textContent = 0;
+      if (fallidasAmarilloDisplay) fallidasAmarilloDisplay.textContent = 0;
+      if (promedioBlancoDom) promedioBlancoDom.textContent = "0%";
+      if (promedioAmarilloDom) promedioAmarilloDom.textContent = "0%";
+
       // Guardar valores vacíos
       DataManager.saveGeneralFile("nombre_blanco", "");
       DataManager.saveGeneralFile("nombre_amarillo", "");
@@ -93,6 +159,8 @@ const ResetManager = (() => {
       DataManager.saveGeneralFile("handicap_amarillo", "");
       DataManager.saveGeneralFile("Point_White", "");
       DataManager.saveGeneralFile("Point_Yellow", "");
+      DataManager.saveGeneralFile("totalEfectivasBlanco", 0);
+      DataManager.saveGeneralFile("totalEfectivasAmarillo", 0);
 
       // Reiniciar todos los sets
       const sets = ["set1", "set2", "set3", "set4", "set5"];
@@ -105,6 +173,17 @@ const ResetManager = (() => {
       });
 
       if (setSelector) setSelector.value = setOriginal;
+
+      // Actualizar display final de efectividad
+      if (window.CounterManager && window.CounterManager.updateEntradaDisplay) {
+        CounterManager.updateEntradaDisplay();
+      }
+
+      // Reiniciar EffectivenessManager para el set original
+      if (window.EffectivenessManager && window.EffectivenessManager.initialize) {
+        EffectivenessManager.initialize();
+        console.log("✅ EffectivenessManager reiniciado después de resetear todos los marcadores");
+      }
     });
   }
 
