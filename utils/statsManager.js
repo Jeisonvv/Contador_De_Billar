@@ -119,3 +119,6 @@ const StatsManager = (() => {
     initializeListeners
   };
 })();
+
+// Hacer accesible globalmente
+window.StatsManager = StatsManager;

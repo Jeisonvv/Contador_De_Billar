@@ -26,28 +26,20 @@ const CounterManager = (() => {
 
     // Listener para botón de incremento
     document.getElementById(idBtnMas)?.addEventListener("click", () => {
-      console.log(`🔘 CLICK en botón +${idDisplay}`);
-      console.log(`  Antes de incremento: window["valor_${idDisplay}"]=${window["valor_" + idDisplay]}, DOM=${display?.textContent}`);
-      
       window["valor_" + idDisplay]++;
-      
-      console.log(`  Después de incremento: window["valor_${idDisplay}"]=${window["valor_" + idDisplay]}`);
       display.textContent = window["valor_" + idDisplay];
-      console.log(`  DOM actualizado a: ${display?.textContent}`);
       
       saveValue(idDisplay, window["valor_" + idDisplay], esGeneral, guardarEnAmbos);
 
       // Si es puntos de un jugador, registrar que es su turno
       if (playerColor && (idDisplay === "Point_White" || idDisplay === "Point_Yellow")) {
         lastPlayerTurn = playerColor;
-        console.log(`👤 Turno de: ${playerColor}`);
         // Actualizar display de efectividad cuando cambian los puntos
         updateEntradaDisplay();
       }
 
       // Si es la entrada, verificar fallidas automáticamente
       if (verificarFallidas && idDisplay === "entry") {
-        console.log(`📝 VERIFICAR FALLIDAS para entrada=${window["valor_" + idDisplay]}`);
         checkAndRegisterFailures();
         updateEntradaDisplay(); // Actualizar display de entrada
       }
@@ -74,66 +66,53 @@ const CounterManager = (() => {
    */
   function checkAndRegisterFailures() {
     console.log("▶️ INICIANDO checkAndRegisterFailures()");
-    
     if (!EffectivenessManager) {
-      console.error("❌ EffectivenessManager NO EXISTE");
+      console.error("EffectivenessManager NO EXISTE");
       return;
     }
 
     const effectiveness = EffectivenessManager.checkEffectiveness();
-    console.log("📊 Effectiveness data:", effectiveness);
-
-    // Si la entrada se incrementó
     if (effectiveness.entriesAdded > 0) {
       const whitePoints = parseInt(document.getElementById("Point_White")?.textContent || 0, 10);
       const yellowPoints = parseInt(document.getElementById("Point_Yellow")?.textContent || 0, 10);
 
-      console.log(`🎯 Registro de Entrada - Blanco: ${whitePoints}, Amarillo: ${yellowPoints}`);
-
       // ACUMULAR puntos en los marcadores antes de resetear
       if (whitePoints > 0) {
-        console.log(`💰 Acumulando ${whitePoints} puntos para BLANCO`);
-        // Obtener marcador actual
         const marcadorWhite = document.getElementById("whitePlayerMarcador");
         let puntosAcumulados = parseInt(marcadorWhite?.textContent || 0, 10);
         puntosAcumulados += whitePoints;
-        if (marcadorWhite) marcadorWhite.textContent = puntosAcumulados;
         
-        // Guardar en archivos
+        if (marcadorWhite) marcadorWhite.textContent = puntosAcumulados;
         DataManager.saveSetFile("whitePlayerMarcador", puntosAcumulados);
         DataManager.saveGeneralFile("whitePlayerMarcador", puntosAcumulados);
       }
       
       if (yellowPoints > 0) {
-        console.log(`💰 Acumulando ${yellowPoints} puntos para AMARILLO`);
-        // Obtener marcador actual
         const marcadorYellow = document.getElementById("yellowPlayerMarcador");
-        let puntosAcumulados = parseInt(marcadorYellow?.textContent || 0, 10);
+        const marcadorWhite = document.getElementById("whitePlayerMarcador");
+        let puntosAcumulados = parseInt(marcadorWhite?.textContent || 0, 10);
         puntosAcumulados += yellowPoints;
-        if (marcadorYellow) marcadorYellow.textContent = puntosAcumulados;
         
-        // Guardar en archivos
+        if (marcadorYellow) marcadorYellow.textContent = puntosAcumulados;
         DataManager.saveSetFile("yellowPlayerMarcador", puntosAcumulados);
         DataManager.saveGeneralFile("yellowPlayerMarcador", puntosAcumulados);
       }
 
-      // Registrar efectivas para quien SÍ anotó puntos
+      console.log(`📋 ANÁLISIS DE PUNTOS: Blanco=${whitePoints}, Amarillo=${yellowPoints}`);
       if (whitePoints > 0) {
-        console.log("✅ Registrando EFECTIVA para BLANCO");
         incrementarEfectivas("White");
       }
       if (yellowPoints > 0) {
-        console.log("✅ Registrando EFECTIVA para AMARILLO");
         incrementarEfectivas("Yellow");
       }
 
-      // Registrar fallidas para quien NO anotó puntos
+      // Registrar fallidas para quien NO anotó (0 puntos)
       if (whitePoints === 0) {
-        console.log("❌ Registrando FALLIDA para BLANCO");
+        console.log("❌ Registrando FALLIDA para AMARILLO (0 puntos)");
         incrementarFallidas("White");
       }
       if (yellowPoints === 0) {
-        console.log("❌ Registrando FALLIDA para AMARILLO");
+        console.log(`✅ AMARILLO tuvo ${yellowPoints} puntos, NO es fallida`);
         incrementarFallidas("Yellow");
       }
 
@@ -146,8 +125,9 @@ const CounterManager = (() => {
       // Guardar los puntos reseteados en los archivos
       saveValue("Point_White", 0, false, true);
       saveValue("Point_Yellow", 0, false, true);
-    } else {
-      console.log(`⚠️ entriesAdded NO fue > 0: ${effectiveness.entriesAdded}`);
+
+      // Actualizar display de efectividad después de procesar fallidas
+      updateEntradaDisplay();
     }
 
     // Actualizar estado anterior después de procesar
@@ -159,8 +139,6 @@ const CounterManager = (() => {
    * Muestra carambolas efectivas acumuladas, fallidas, promedio por jugador y series más altas
    */
   function updateEntradaDisplay() {
-    console.log("🔄 Actualizando display de efectividad...");
-    
     // Obtener efectivas acumuladas
     const efectivasBlanco = parseInt(document.getElementById("totalEfectivasBlanco")?.textContent || 0, 10);
     const efectivasAmarillo = parseInt(document.getElementById("totalEfectivasAmarillo")?.textContent || 0, 10);
@@ -174,9 +152,6 @@ const CounterManager = (() => {
     const entrada_serie_white = parseInt(document.getElementById("entrada_serie_white")?.textContent || 0, 10);
     const highestserieYellow = parseInt(document.getElementById("highestserieYellow")?.textContent || 0, 10);
     const entrada_serie_yellow = parseInt(document.getElementById("entrada_serie_yellow")?.textContent || 0, 10);
-    
-    console.log(`📊 Valores: Efectivas B=${efectivasBlanco}, A=${efectivasAmarillo}, Fallidas B=${fallidasBlanco}, A=${fallidasAmarillo}`);
-    console.log(`📊 Series: B=${highestserieWhite} en entrada ${entrada_serie_white}, A=${highestserieYellow} en entrada ${entrada_serie_yellow}`);
     
     // Calcular promedio de efectividad
     const totalBlanco = efectivasBlanco + fallidasBlanco;
@@ -210,8 +185,6 @@ const CounterManager = (() => {
     if (entrada_serie_whiteDisplay) entrada_serie_whiteDisplay.textContent = entrada_serie_white;
     if (highestserieYellowDisplay) highestserieYellowDisplay.textContent = highestserieYellow;
     if (entrada_serie_yellowDisplay) entrada_serie_yellowDisplay.textContent = entrada_serie_yellow;
-    
-    console.log(`✅ Display actualizado: Promedio B=${promedioBlancoPct}%, A=${promedioAmarilloPct}%`);
   }
 
   /**
@@ -223,7 +196,7 @@ const CounterManager = (() => {
     const idEfectivas = `totalEfectivas${colorName}`;
     const elemento = document.getElementById(idEfectivas);
     if (!elemento) {
-      console.error(`❌ Elemento no encontrado: ${idEfectivas}`);
+      console.error(`Elemento no encontrado: ${idEfectivas}`);
       return;
     }
 
@@ -234,7 +207,6 @@ const CounterManager = (() => {
     // Guardar en archivos
     DataManager.saveSetFile(idEfectivas, efectivas);
     DataManager.saveGeneralFile(idEfectivas, efectivas);
-
     console.log(`✅ Carambola efectiva registrada para ${colorName}: ${efectivas} (ID: ${idEfectivas})`);
   }
 
@@ -245,17 +217,25 @@ const CounterManager = (() => {
   function incrementarFallidas(colorJugador) {
     const idFallidas = `noCarambola_${colorJugador}`;
     const elemento = document.getElementById(idFallidas);
-    if (!elemento) return;
+    
+    if (!elemento) {
+      console.error(`ERROR: Elemento ${idFallidas} NO ENCONTRADO en el DOM`);
+      return;
+    }
 
     let fallidas = parseInt(elemento.textContent, 10) || 0;
     fallidas++;
     elemento.textContent = fallidas;
-
-    // Guardar en archivos
-    DataManager.saveSetFile(idFallidas, fallidas);
-    DataManager.saveGeneralFile(idFallidas, fallidas);
-
-    console.log(`📊 Fallida registrada para ${colorJugador}: ${fallidas}`);
+    console.log(`📊 Fallidas actuales para ${colorJugador}: ${fallidas}`);
+    try {
+      console.log(`💾 Intentando guardar ${idFallidas} = ${fallidas} en archivos...`);
+      DataManager.saveSetFile(idFallidas, fallidas);
+      console.log(`✅ Guardado en set file: ${idFallidas}`);
+      DataManager.saveGeneralFile(idFallidas, fallidas);
+      console.log(`✅ Guardado en general file: ${idFallidas}`);
+    } catch (err) {
+      console.error(`Error al guardar fallida para ${colorJugador}:`, err);
+    }
   }
 
   /**
@@ -279,8 +259,9 @@ const CounterManager = (() => {
     // Contador de puntos del jugador blanco (registra turno)
     createCounter("increase_white", "decrease_white", "Point_White", false, true, false, "White");
 
-    // Contador de entradas (Con verificación de fallidas automática)
-    createCounter("increase_entry", "decrease_entry", "entry", true, false, true);
+    // Contador de entradas (Guarda en AMBAS ubicaciones para trabajar con sets)
+    // Parámetros: id+, id-, idDisplay, esGeneral, guardarEnAmbos, verificarFallidas
+    createCounter("increase_entry", "decrease_entry", "entry", true, true, true);
 
     // Contador de puntos del jugador amarillo (registra turno)
     createCounter("increase_yellow", "decrease_yellow", "Point_Yellow", false, true, false, "Yellow");
@@ -295,3 +276,6 @@ const CounterManager = (() => {
     updateEntradaDisplay
   };
 })();
+
+// Hacer accesible globalmente
+window.CounterManager = CounterManager;

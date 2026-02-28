@@ -90,3 +90,6 @@ const DataManager = (() => {
     loadSetFile
   };
 })();
+
+// Hacer accesible globalmente
+window.DataManager = DataManager;

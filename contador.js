@@ -5,7 +5,7 @@
  * Inicializa y coordina todos los módulos de la aplicación
  */
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   
   /**
    * Inicializar todos los módulos cuando el DOM esté listo
@@ -29,17 +29,24 @@ document.addEventListener('DOMContentLoaded', function() {
   // 5. Inicializar reinicio de sets y marcadores
   ResetManager.initializeListeners();
 
-  // 6. Inicializar monitor de efectividad de tacadas
-  EffectivenessManager.initialize();
+  // 6. Cargar datos correctos del set actual ANTES de inicializar EffectivenessManager
+  await loadSetDataFromFiles();
 
-  // 7. Cargar datos correctos del set actual (efectivas y fallidas del set, no del general)
-  loadSetDataFromFiles();
-
-  // 8. Escuchar cambios de set para recargar efectivas y fallidas
+  console.log("✅ DOM preparado con valores por defecto");
+  
+  // 7. Escuchar cambios de set para recargar efectivas y fallidas
   const setSelector = document.getElementById("setSelector");
   if (setSelector) {
-    setSelector.addEventListener("change", () => {
-      loadSetDataFromFiles();
+    setSelector.addEventListener("change", async () => {
+      console.log("🔄 Cambio de set detectado, cargando datos del nuevo set...");
+      await loadSetDataFromFiles();
+      console.log("✅ Datos del nuevo set cargados correctamente");
+      
+      // CRÍTICO: Reinicializar EffectivenessManager DESPUÉS de que todos los datos estén cargados
+      const entryValue = parseInt(document.getElementById("entry")?.textContent || 1, 10);
+      console.log(`🔧 [CRITICAL] Reinicializando EffectivenessManager con entrada=${entryValue}`);
+      EffectivenessManager.initialize(entryValue);
+      console.log(`✅ [CRITICAL] EffectivenessManager reiniciado a entrada=${entryValue}`);
     });
   }
 
@@ -93,9 +100,9 @@ function saveDefaultValuesToFiles() {
     // Restaurar set original
     if (setSelector) setSelector.value = setOriginal;
 
-    console.log("✅ Valores por defecto guardados en todos los archivos");
+
   } catch (err) {
-    console.error("❌ Error al guardar valores por defecto:", err);
+    console.error("Error al guardar valores por defecto:", err);
   }
 }
 
@@ -103,7 +110,7 @@ function saveDefaultValuesToFiles() {
  * Inicializa los valores por defecto
  */
 function initializeDefaultValues() {
-  console.log("🔧 Inicializando valores por defecto en DOM...");
+
   
   // Limpiar nombres de jugadores
   const nameWhitePlayer = document.getElementById("nameWhitePlayer");
@@ -132,7 +139,7 @@ function initializeDefaultValues() {
     window["valor_entry"] = 1;
   }
   
-  console.log("✅ DOM preparado con valores por defecto");
+
 }
 
 /**
@@ -160,7 +167,7 @@ async function loadEfectivasFromFiles() {
       CounterManager.updateEntradaDisplay();
     }
 
-    console.log(`✅ Efectivas cargadas - Blanco: ${valBlanco}, Amarillo: ${valAmarillo}`);
+
   } catch (err) {
     console.error("Error al cargar efectivas:", err);
   }
@@ -185,6 +192,11 @@ async function loadSetDataFromFiles() {
     const highestserieYellow = await DataManager.loadSetFile("highestserieYellow");
     const entrada_serie_yellow = await DataManager.loadSetFile("entrada_serie_yellow");
     
+    // Cargar entrada y puntos del set actual
+    const entry = await DataManager.loadSetFile("entry");
+    const pointWhite = await DataManager.loadSetFile("Point_White");
+    const pointYellow = await DataManager.loadSetFile("Point_Yellow");
+    
     // Actualizar DOM
     const valBlanco = parseInt(efectivasBlanco, 10) || 0;
     const valAmarillo = parseInt(efectivasAmarillo, 10) || 0;
@@ -194,6 +206,9 @@ async function loadSetDataFromFiles() {
     const valEntrada_serie_white = parseInt(entrada_serie_white, 10) || 0;
     const valHighestserieYellow = parseInt(highestserieYellow, 10) || 0;
     const valEntrada_serie_yellow = parseInt(entrada_serie_yellow, 10) || 0;
+    const valEntry = parseInt(entry, 10) || 1;
+    const valPointWhite = parseInt(pointWhite, 10) || 0;
+    const valPointYellow = parseInt(pointYellow, 10) || 0;
     
     const elemEfectivasBlanco = document.getElementById("totalEfectivasBlanco");
     const elemEfectivasAmarillo = document.getElementById("totalEfectivasAmarillo");
@@ -203,6 +218,9 @@ async function loadSetDataFromFiles() {
     const elemEntrada_serie_white = document.getElementById("entrada_serie_white");
     const elemHighestserieYellow = document.getElementById("highestserieYellow");
     const elemEntrada_serie_yellow = document.getElementById("entrada_serie_yellow");
+    const elemEntry = document.getElementById("entry");
+    const elemPointWhite = document.getElementById("Point_White");
+    const elemPointYellow = document.getElementById("Point_Yellow");
     
     if (elemEfectivasBlanco) elemEfectivasBlanco.textContent = valBlanco;
     if (elemEfectivasAmarillo) elemEfectivasAmarillo.textContent = valAmarillo;
@@ -213,18 +231,27 @@ async function loadSetDataFromFiles() {
     if (elemHighestserieYellow) elemHighestserieYellow.textContent = valHighestserieYellow;
     if (elemEntrada_serie_yellow) elemEntrada_serie_yellow.textContent = valEntrada_serie_yellow;
     
+    // Actualizar entrada y puntos en el DOM
+    if (elemEntry) {
+      elemEntry.textContent = valEntry;
+      window["valor_entry"] = valEntry;
+    }
+    if (elemPointWhite) {
+      elemPointWhite.textContent = valPointWhite;
+      window["valor_Point_White"] = valPointWhite;
+    }
+    if (elemPointYellow) {
+      elemPointYellow.textContent = valPointYellow;
+      window["valor_Point_Yellow"] = valPointYellow;
+    }
+    
     // Actualizar display con los valores cargados
     if (window.CounterManager && window.CounterManager.updateEntradaDisplay) {
       CounterManager.updateEntradaDisplay();
     }
-
-    // Reiniciar EffectivenessManager para el nuevo set
-    if (window.EffectivenessManager && window.EffectivenessManager.initialize) {
-      EffectivenessManager.initialize();
-    }
     
     const setActual = DataManager.getSetActual();
-    console.log(`✅ Datos del set ${setActual} cargados - Efectivas B: ${valBlanco}, A: ${valAmarillo}, Fallidas B: ${valFallidasBlanco}, A: ${valFallidasAmarillo}, Series B: ${valHighestserieWhite} entrada ${valEntrada_serie_white}, Series A: ${valHighestserieYellow} entrada ${valEntrada_serie_yellow}`);
+
   } catch (err) {
     console.error("Error al cargar datos del set:", err);
   }

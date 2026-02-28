@@ -189,6 +189,20 @@
         <span id="totalEfectivasAmarillo">0</span>
       </div>
 
+      <!-- Contadores acumulativos ocultos para fallidas -->
+      <div id="fallidasStorage" style="display: none;">
+        <span id="noCarambola_White">0</span>
+        <span id="noCarambola_Yellow">0</span>
+      </div>
+
+      <!-- Contadores para series más altas -->
+      <div id="seriesStorage" style="display: none;">
+        <span id="highestserieWhite">0</span>
+        <span id="entrada_serie_white">0</span>
+        <span id="highestserieYellow">0</span>
+        <span id="entrada_serie_yellow">0</span>
+      </div>
+
       <div class="resetButton">
         <div>
           <button id="resetButtonSet" class="btn-3">Reiniciar set</button>
@@ -212,12 +226,12 @@
     <!-- Cargar módulos en orden correcto -->
     <script src="utils/dataManager.js"></script>
     <script src="utils/playerManager.js"></script>
+    <script src="utils/effectivenessManager.js"></script>
     <script src="utils/counterManager.js"></script>
     <script src="utils/scoreManager.js"></script>
     <script src="utils/statsManager.js"></script>
     <script src="utils/modalManager.js"></script>
     <script src="utils/resetManager.js"></script>
-    <script src="utils/effectivenessManager.js"></script>
     
     <!-- Archivo principal de orquestación -->
     <script src="contador.js"></script>

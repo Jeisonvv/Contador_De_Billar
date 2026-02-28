@@ -23,16 +23,12 @@ const EffectivenessManager = (() => {
     const yellow = parseInt(document.getElementById("Point_Yellow")?.textContent || 0, 10);
     const entries = parseInt(entryElement?.textContent || 0, 10);
 
-    console.log(`📖 loadPreviousState() leyendo del DOM: entry=${entries}, white=${white}, yellow=${yellow}`);
-
     previousState = {
       whitePoints: white,
       yellowPoints: yellow,
       entries: entries,
       timestamp: Date.now()
     };
-    
-    console.log(`📋 EffectivenessManager inicializado - Previous State: entries=${entries}, white=${white}, yellow=${yellow}`);
   }
 
   /**
@@ -45,8 +41,6 @@ const EffectivenessManager = (() => {
       entries: parseInt(document.getElementById("entry")?.textContent || 0, 10),
       timestamp: Date.now()
     };
-    
-    console.log(`📍 getCurrentState(): entries=${currentState.entries}, white=${currentState.whitePoints}, yellow=${currentState.yellowPoints}`);
     
     return currentState;
   }
@@ -79,7 +73,6 @@ const EffectivenessManager = (() => {
       timestamp: currentState.timestamp
     };
 
-    console.log("📊 Análisis de Tacada:", result);
     return result;
   }
 
@@ -137,20 +130,30 @@ const EffectivenessManager = (() => {
 
   /**
    * Inicializa el monitor de efectividad
-   * Debe llamarse después de cargar el DOM
+   * @param {number} entryValue - Valor opcional de entrada para sincronizar (para evitar timing issues)
    */
-  function initialize() {
-    loadPreviousState();
-    console.log("✅ EffectivenessManager inicializado");
+  function initialize(entryValue = null) {
+    if (entryValue !== null) {
+      // Si se proporciona un valor de entrada explícito, usarlo
+      previousState = {
+        whitePoints: 0,
+        yellowPoints: 0,
+        entries: parseInt(entryValue, 10) || 1,
+        timestamp: Date.now()
+      };
+      console.log(`❓ EffectivenessManager inicializado con entrada explícita: ${entryValue}`);
+    } else {
+      // Si no, leer del DOM
+      loadPreviousState();
+      console.log(`✅ EffectivenessManager inicializado`);
+    }
   }
 
   /**
    * Actualiza el estado anterior (deber llamarse después de guardar una tacada)
    */
   function updatePreviousState() {
-    console.log("🔄 Actualizando previousState...");
     loadPreviousState();
-    console.log("✅ previousState actualizado:", previousState);
   }
 
   // Public API
@@ -165,3 +168,6 @@ const EffectivenessManager = (() => {
     getPreviousState: () => previousState
   };
 })();
+
+// Hacer accesible globalmente
+window.EffectivenessManager = EffectivenessManager;

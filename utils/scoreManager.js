@@ -58,3 +58,6 @@ const ScoreManager = (() => {
   };
 })();
 
+// Hacer accesible globalmente
+window.ScoreManager = ScoreManager;
+

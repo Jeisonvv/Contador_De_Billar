@@ -66,3 +66,6 @@ const PlayerManager = (() => {
     exchange
   };
 })();
+
+// Hacer accesible globalmente
+window.PlayerManager = PlayerManager;

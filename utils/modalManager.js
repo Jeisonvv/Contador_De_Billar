@@ -76,3 +76,6 @@ const ModalManager = (() => {
     showConfirmation
   };
 })();
+
+// Hacer accesible globalmente
+window.ModalManager = ModalManager;

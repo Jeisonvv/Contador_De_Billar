@@ -14,13 +14,11 @@ const ResetManager = (() => {
    * @param {number} valorReinicio - Valor a establecer
    */
   function resetCounters(ids, esGeneral, archivos, valorReinicio = 1) {
-    console.log(`🔧 resetCounters llamado: ids=${ids}, valorReinicio=${valorReinicio}`);
     ids.forEach((id, idx) => {
       window["valor_" + id] = valorReinicio;
       const el = document.getElementById(id);
       if (el) {
         el.textContent = valorReinicio;
-        console.log(`✅ Reset de ${id}: window.valor_${id}=${valorReinicio}, DOM=${el.textContent}`);
       }
 
       if (archivos && archivos[idx]) {
@@ -50,8 +48,8 @@ const ResetManager = (() => {
     // Reiniciar puntos a 0
     resetCounters(["Point_White", "Point_Yellow"], false, ["Point_White", "Point_Yellow"], 0);
 
-    // Reiniciar entrada a 1
-    resetCounters(["entry"], true, ["entry"], 1);
+    // Reiniciar entrada a 1 en ambas ubicaciones (general y set actual)
+    resetCounters(["entry"], false, ["entry"], 1);
 
     console.log("✅ resetSet completado, ahora inicializando EffectivenessManager");
 
@@ -106,10 +104,14 @@ const ResetManager = (() => {
       CounterManager.updateEntradaDisplay();
     }
 
-    // Reiniciar EffectivenessManager para registrar correctamente la próxima entrada
+    // 🔴 CRÍTICO: Reiniciar EffectivenessManager con entrada=1 explícitamente
+    console.log("🔴 [CRÍTICO] Antes de reinicializar EffectivenessManager: window.EffectivenessManager =", typeof window.EffectivenessManager);
     if (window.EffectivenessManager && window.EffectivenessManager.initialize) {
-      EffectivenessManager.initialize();
-      console.log("✅ EffectivenessManager reiniciado después de resetear set");
+      console.log("🔴 [CRÍTICO] Ejecutando EffectivenessManager.initialize(1)");
+      EffectivenessManager.initialize(1);
+      console.log("✅ [CRÍTICO] EffectivenessManager reiniciado a entrada=1 después de resetear set");
+    } else {
+      console.error("EffectivenessManager NO está disponible al resetear set");
     }
   }
 
@@ -179,10 +181,11 @@ const ResetManager = (() => {
         CounterManager.updateEntradaDisplay();
       }
 
-      // Reiniciar EffectivenessManager para el set original
+      // Reiniciar EffectivenessManager leyendo valor actual de entrada del DOM
       if (window.EffectivenessManager && window.EffectivenessManager.initialize) {
-        EffectivenessManager.initialize();
-        console.log("✅ EffectivenessManager reiniciado después de resetear todos los marcadores");
+        const entryValue = parseInt(document.getElementById("entry")?.textContent || 1, 10);
+        EffectivenessManager.initialize(entryValue);
+        console.log(`✅ [CRITICAL] EffectivenessManager reiniciado a entrada=${entryValue} después de resetear todos los marcadores`);
       }
     });
   }
@@ -208,3 +211,6 @@ const ResetManager = (() => {
     initializeListeners
   };
 })();
+
+// Hacer accesible globalmente
+window.ResetManager = ResetManager;
