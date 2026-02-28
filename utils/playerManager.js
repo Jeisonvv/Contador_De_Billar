@@ -13,6 +13,11 @@ const PlayerManager = (() => {
     // Escuchar cambios de nombre del jugador blanco
     document.getElementById("nameWhitePlayer")?.addEventListener("input", (e) => {
       DataManager.saveGeneralFile("nombre_blanco", e.target.value);
+      // Actualizar el h4 con el nombre del jugador blanco
+      const blancoHeader = document.getElementById("blancoHeader");
+      if (blancoHeader) {
+        blancoHeader.textContent = e.target.value || "BLANCO";
+      }
     });
 
     // Escuchar cambios de handicap del jugador blanco
@@ -23,6 +28,11 @@ const PlayerManager = (() => {
     // Escuchar cambios de nombre del jugador amarillo
     document.getElementById("nameYellowPlayer")?.addEventListener("input", (e) => {
       DataManager.saveGeneralFile("nombre_amarillo", e.target.value);
+      // Actualizar el h4 con el nombre del jugador amarillo
+      const amarilloHeader = document.getElementById("amarilloHeader");
+      if (amarilloHeader) {
+        amarilloHeader.textContent = e.target.value || "AMARILLO";
+      }
     });
 
     // Escuchar cambios de handicap del jugador amarillo
@@ -52,6 +62,16 @@ const PlayerManager = (() => {
     const tempHandicap = whiteHandicap.value;
     whiteHandicap.value = yellowHandicap.value;
     yellowHandicap.value = tempHandicap;
+
+    // Actualizar los h4 con los nombres intercambiados
+    const blancoHeader = document.getElementById("blancoHeader");
+    const amarilloHeader = document.getElementById("amarilloHeader");
+    if (blancoHeader) {
+      blancoHeader.textContent = whiteName.value || "BLANCO";
+    }
+    if (amarilloHeader) {
+      amarilloHeader.textContent = yellowName.value || "AMARILLO";
+    }
 
     // Guardar los valores intercambiados en archivos
     DataManager.saveGeneralFile("nombre_blanco", whiteName.value);

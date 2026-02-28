@@ -49,7 +49,8 @@ const ResetManager = (() => {
     resetCounters(["Point_White", "Point_Yellow"], false, ["Point_White", "Point_Yellow"], 0);
 
     // Reiniciar entrada a 1 en ambas ubicaciones (general y set actual)
-    resetCounters(["entry"], false, ["entry"], 1);
+    resetCounters(["entry"], true, ["entry"], 1);
+    DataManager.saveSetFile("entry", 1);
 
     console.log("✅ resetSet completado, ahora inicializando EffectivenessManager");
 

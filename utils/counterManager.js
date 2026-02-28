@@ -89,8 +89,7 @@ const CounterManager = (() => {
       
       if (yellowPoints > 0) {
         const marcadorYellow = document.getElementById("yellowPlayerMarcador");
-        const marcadorWhite = document.getElementById("whitePlayerMarcador");
-        let puntosAcumulados = parseInt(marcadorWhite?.textContent || 0, 10);
+        let puntosAcumulados = parseInt(marcadorYellow?.textContent || 0, 10);
         puntosAcumulados += yellowPoints;
         
         if (marcadorYellow) marcadorYellow.textContent = puntosAcumulados;
@@ -108,11 +107,11 @@ const CounterManager = (() => {
 
       // Registrar fallidas para quien NO anotó (0 puntos)
       if (whitePoints === 0) {
-        console.log("❌ Registrando FALLIDA para AMARILLO (0 puntos)");
+        console.log("❌ Registrando FALLIDA para BLANCO (0 puntos)");
         incrementarFallidas("White");
       }
       if (yellowPoints === 0) {
-        console.log(`✅ AMARILLO tuvo ${yellowPoints} puntos, NO es fallida`);
+        console.log("❌ Registrando FALLIDA para AMARILLO (0 puntos)");
         incrementarFallidas("Yellow");
       }
 
