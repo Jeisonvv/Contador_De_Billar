@@ -1,6 +1,7 @@
 html {
   height: 100%;
   overflow: hidden;
+  font-family: 'Montserrat', 'Haettenschweiler', 'Arial Narrow Bold', sans-serif;
 }
 
 body {
@@ -431,8 +432,8 @@ input::-webkit-inner-spin-button {
 }
 
 .efectividad_item .valor {
-  font-size: 2.1vw;
-  font-weight: bold;
+  font-size: 1.5vw;
+  font-weight: wbold;
   margin: 0;
   color: #ffeb3b;
 }

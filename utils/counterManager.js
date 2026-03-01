@@ -98,20 +98,28 @@ const CounterManager = (() => {
       }
 
       console.log(`📋 ANÁLISIS DE PUNTOS: Blanco=${whitePoints}, Amarillo=${yellowPoints}`);
-      if (whitePoints > 0) {
+      
+      // 🔵 VERIFICAR VARIABLES BOOLEANAS PARA CADA JUGADOR
+      const whiteWasEffective = window.isWhiteEffective;
+      const yellowWasEffective = window.isYellowEffective;
+      console.log(`🔵 Variable isWhiteEffective = ${whiteWasEffective}`);
+      console.log(`🔵 Variable isYellowEffective = ${yellowWasEffective}`);
+      
+      // ✅ BLANCO: Verificar su variable independiente
+      if (whiteWasEffective) {
+        console.log(`✅ BLANCO EFECTIVA - Se acumularon puntos en esta entrada`);
         incrementarEfectivas("White");
-      }
-      if (yellowPoints > 0) {
-        incrementarEfectivas("Yellow");
-      }
-
-      // Registrar fallidas para quien NO anotó (0 puntos)
-      if (whitePoints === 0) {
-        console.log("❌ Registrando FALLIDA para BLANCO (0 puntos)");
+      } else {
+        console.log(`❌ BLANCO FALLIDA - No se acumularon puntos en esta entrada`);
         incrementarFallidas("White");
       }
-      if (yellowPoints === 0) {
-        console.log("❌ Registrando FALLIDA para AMARILLO (0 puntos)");
+      
+      // ✅ AMARILLO: Verificar su variable independiente
+      if (yellowWasEffective) {
+        console.log(`✅ AMARILLO EFECTIVA - Se acumularon puntos en esta entrada`);
+        incrementarEfectivas("Yellow");
+      } else {
+        console.log(`❌ AMARILLO FALLIDA - No se acumularon puntos en esta entrada`);
         incrementarFallidas("Yellow");
       }
 
@@ -125,7 +133,12 @@ const CounterManager = (() => {
       saveValue("Point_White", 0, false, true);
       saveValue("Point_Yellow", 0, false, true);
 
-      // Actualizar display de efectividad después de procesar fallidas
+      // 🔵 RESET DE LAS VARIABLES BOOLEANAS PARA AMBOS JUGADORES
+      window.isWhiteEffective = false;
+      window.isYellowEffective = false;
+      console.log(`🔄 Variables isWhiteEffective e isYellowEffective reset a FALSE para próxima entrada`);
+
+      // Actualizar display de efectividad después de procesar
       updateEntradaDisplay();
     }
 
