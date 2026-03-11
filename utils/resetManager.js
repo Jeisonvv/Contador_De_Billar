@@ -13,8 +13,9 @@ const ResetManager = (() => {
    * @param {array} archivos - Array de nombres de archivos
    * @param {number} valorReinicio - Valor a establecer
    */
-  function resetCounters(ids, esGeneral, archivos, valorReinicio = 1) {
-    ids.forEach((id, idx) => {
+  async function resetCounters(ids, esGeneral, archivos, valorReinicio = 1) {
+    for (let idx = 0; idx < ids.length; idx++) {
+      const id = ids[idx];
       window["valor_" + id] = valorReinicio;
       const el = document.getElementById(id);
       if (el) {
@@ -23,19 +24,19 @@ const ResetManager = (() => {
 
       if (archivos && archivos[idx]) {
         if (esGeneral) {
-          DataManager.saveGeneralFile(archivos[idx], valorReinicio);
+          await DataManager.saveGeneralFile(archivos[idx], valorReinicio);
         } else {
-          DataManager.saveSetFile(archivos[idx], valorReinicio);
+          await DataManager.saveSetFile(archivos[idx], valorReinicio);
         }
       }
-    });
+    }
   }
 
   /**
    * Reinicia todos los datos del set actual
    * @param {boolean} sinConfirmacion - Si true, reinicia sin pedir confirmación
    */
-  function resetSet(sinConfirmacion = false) {
+  async function resetSet(sinConfirmacion = false) {
     if (!sinConfirmacion) {
       ModalManager.showConfirmation('¿Deseas borrar todos los datos del set actual?', (confirmado) => {
         if (confirmado) resetSet(true);
@@ -46,19 +47,19 @@ const ResetManager = (() => {
     console.log("🔄 INICIANDO resetSet()");
 
     // Reiniciar puntos a 0
-    resetCounters(["Point_White", "Point_Yellow"], false, ["Point_White", "Point_Yellow"], 0);
+    await resetCounters(["Point_White", "Point_Yellow"], false, ["Point_White", "Point_Yellow"], 0);
 
     // Reiniciar entrada a 1 en ambas ubicaciones (general y set actual)
-    resetCounters(["entry"], true, ["entry"], 1);
-    DataManager.saveSetFile("entry", 1);
+    await resetCounters(["entry"], true, ["entry"], 1);
+    await DataManager.saveSetFile("entry", 1);
 
     console.log("✅ resetSet completado, ahora inicializando EffectivenessManager");
 
     // Reiniciar efectivas a 0
-    resetCounters(["totalEfectivasBlanco", "totalEfectivasAmarillo"], false, ["totalEfectivasBlanco", "totalEfectivasAmarillo"], 0);
+    await resetCounters(["totalEfectivasBlanco", "totalEfectivasAmarillo"], false, ["totalEfectivasBlanco", "totalEfectivasAmarillo"], 0);
 
     // Reiniciar fallidas a 0
-    resetCounters(["noCarambola_White", "noCarambola_Yellow"], false, ["noCarambola_White", "noCarambola_Yellow"], 0);
+    await resetCounters(["noCarambola_White", "noCarambola_Yellow"], false, ["noCarambola_White", "noCarambola_Yellow"], 0);
 
     // Limpiar display de efectividad inmediatamente
     const efectivasBlancoDisplay = document.getElementById("efectivasBlanco");
@@ -76,25 +77,27 @@ const ResetManager = (() => {
     if (promedioAmarilloDom) promedioAmarilloDom.textContent = "0%";
 
     // Reiniciar marcadores acumulados a 0
-    ["whitePlayerMarcador", "yellowPlayerMarcador"].forEach((id) => {
+    for (const id of ["whitePlayerMarcador", "yellowPlayerMarcador"]) {
       window["valor_" + id] = 0;
       const el = document.getElementById(id);
       if (el) el.textContent = 0;
-      DataManager.saveSetFile(id, 0);
-    });
+      await DataManager.saveSetFile(id, 0);
+    }
 
     // Reiniciar series y entradas de series
-    [
+    const seriesData = [
       { id: "highestserieWhite", archivo: "highestserieWhite" },
       { id: "highestserieYellow", archivo: "highestserieYellow" },
       { id: "entrada_serie_white", archivo: "entrada_serie_white" },
       { id: "entrada_serie_yellow", archivo: "entrada_serie_yellow" },
-    ].forEach(({ id, archivo }) => {
+    ];
+    
+    for (const { id, archivo } of seriesData) {
       window["valor_" + id] = 0;
       const el = document.getElementById(id);
       if (el) el.textContent = 0;
-      DataManager.saveSetFile(archivo, 0);
-    });
+      await DataManager.saveSetFile(archivo, 0);
+    }
 
     // Recalcular promedios
     StatsManager.updateWhiteAverage();
@@ -103,6 +106,11 @@ const ResetManager = (() => {
     // Actualizar display de efectividad
     if (window.CounterManager && window.CounterManager.updateEntradaDisplay) {
       CounterManager.updateEntradaDisplay();
+    }
+
+    // Actualizar dashboard de datos de partida
+    if (window.DashboardManager && window.DashboardManager.renderDashboard) {
+      DashboardManager.renderDashboard();
     }
 
     // 🔴 CRÍTICO: Reiniciar EffectivenessManager con entrada=1 explícitamente
@@ -119,8 +127,8 @@ const ResetManager = (() => {
   /**
    * Reinicia toda la partida (marcador completo + todos los sets)
    */
-  function resetAllMarkers() {
-    ModalManager.showConfirmation('¿Deseas borrar TODO el marcador y todos los sets?', (confirmado) => {
+  async function resetAllMarkers() {
+    ModalManager.showConfirmation('¿Deseas borrar TODO el marcador y todos los sets?', async (confirmado) => {
       if (!confirmado) return;
 
       // Limpiar nombres y handicaps
@@ -156,30 +164,35 @@ const ResetManager = (() => {
       if (promedioAmarilloDom) promedioAmarilloDom.textContent = "0%";
 
       // Guardar valores vacíos
-      DataManager.saveGeneralFile("nombre_blanco", "");
-      DataManager.saveGeneralFile("nombre_amarillo", "");
-      DataManager.saveGeneralFile("handicap_blanco", "");
-      DataManager.saveGeneralFile("handicap_amarillo", "");
-      DataManager.saveGeneralFile("Point_White", "");
-      DataManager.saveGeneralFile("Point_Yellow", "");
-      DataManager.saveGeneralFile("totalEfectivasBlanco", 0);
-      DataManager.saveGeneralFile("totalEfectivasAmarillo", 0);
+      await DataManager.saveGeneralFile("nombre_blanco", "");
+      await DataManager.saveGeneralFile("nombre_amarillo", "");
+      await DataManager.saveGeneralFile("handicap_blanco", "");
+      await DataManager.saveGeneralFile("handicap_amarillo", "");
+      await DataManager.saveGeneralFile("Point_White", "");
+      await DataManager.saveGeneralFile("Point_Yellow", "");
+      await DataManager.saveGeneralFile("totalEfectivasBlanco", 0);
+      await DataManager.saveGeneralFile("totalEfectivasAmarillo", 0);
 
       // Reiniciar todos los sets
       const sets = ["set1", "set2", "set3", "set4", "set5"];
       const setOriginal = DataManager.getSetActual();
       const setSelector = document.getElementById("setSelector");
 
-      sets.forEach((setName) => {
+      for (const setName of sets) {
         if (setSelector) setSelector.value = setName;
-        resetSet(true);
-      });
+        await resetSet(true);
+      }
 
       if (setSelector) setSelector.value = setOriginal;
 
       // Actualizar display final de efectividad
       if (window.CounterManager && window.CounterManager.updateEntradaDisplay) {
         CounterManager.updateEntradaDisplay();
+      }
+
+      // Actualizar dashboard de datos de partida
+      if (window.DashboardManager && window.DashboardManager.renderDashboard) {
+        DashboardManager.renderDashboard();
       }
 
       // Reiniciar EffectivenessManager leyendo valor actual de entrada del DOM
@@ -195,12 +208,12 @@ const ResetManager = (() => {
    * Inicializa los listeners para los botones de reinicio
    */
   function initializeListeners() {
-    document.getElementById("resetButtonSet")?.addEventListener("click", () => {
-      resetSet(false);
+    document.getElementById("resetButtonSet")?.addEventListener("click", async () => {
+      await resetSet(false);
     });
 
-    document.getElementById("resetButtonMarcador")?.addEventListener("click", () => {
-      resetAllMarkers();
+    document.getElementById("resetButtonMarcador")?.addEventListener("click", async () => {
+      await resetAllMarkers();
     });
   }
 

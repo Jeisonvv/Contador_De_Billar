@@ -405,6 +405,22 @@ input::-webkit-inner-spin-button {
   background: rgba(0, 0, 0, 0.6);
   border-radius: 0.5vw;
   border-left: 0.3vw solid #ffeb3b;
+  transition: all 0.3s ease;
+}
+
+/* ESTILO PARA JUGADOR GANADOR EN EL DASHBOARD */
+.efectividad_player.ganador {
+  /* background: rgba(0, 100, 0, 0.4); */
+  border-left: 0.5vw solid #00ff00;
+  border-radius: 0.8vw;
+  /* box-shadow: 0 0 20px rgba(0, 255, 0, 0.4), inset 0 0 20px rgba(0, 255, 0, 0.1); */
+}
+
+.efectividad_player.ganador h4 {
+  color: #009900 !important;
+  text-shadow: 0 0 10px rgba(0,153,0,0.8);
+  font-size: 2.5vw;
+  letter-spacing: 0.2vw;
 }
 
 .efectividad_player h4 {
@@ -413,6 +429,34 @@ input::-webkit-inner-spin-button {
   text-align: center;
   font-size: 2.2vw;
   letter-spacing: 0px;
+  transition: all 0.3s ease;
+}
+
+.efectividad_player h4.white {
+  /* El color se ajusta dinámicamente según el estado, pero por defecto lo dejamos en blanco */
+  color: #fff;
+}
+
+/* Cuando BLANCO va ganando, el nombre del ganador (blanco) en verde oscuro */
+.ganador_actual.white-ganador .nombre_ganador {
+  color: #009900;
+}
+
+/* Cuando AMARILLO va ganando, el nombre del ganador (amarillo) en verde oscuro */
+.ganador_actual.yellow-ganador .nombre_ganador {
+  color: #009900;
+}
+
+/* Cuando hay empate, el nombre del jugador blanco en blanco y el amarillo en amarillo */
+.ganador_actual.empate .nombre_ganador.blanco {
+  color: #fff;
+}
+.ganador_actual.empate .nombre_ganador.amarillo {
+  color: #ffeb3b;
+}
+
+.efectividad_player h4.yellow {
+  color: #ffeb3b;
 }
 
 .efectividad_item {
@@ -454,4 +498,83 @@ input::-webkit-inner-spin-button {
 .resetButton div {
   flex: 1;
   min-width: 15vw;
+}
+
+/* ================================================================ */
+/* GANADOR ACTUAL - CAMPO DE QUIEN VA GANANDO */
+/* ================================================================ */
+
+.ganador_actual {
+  width: 90vw;
+  max-width: 90vw;
+  margin: 0.8vw auto;
+  padding: 1vw 1.5vw;
+  border-radius: 1vw;
+  text-align: center;
+  transition: all 0.4s ease;
+  box-sizing: border-box;
+}
+
+/* CUANDO BLANCO VA GANANDO */
+.ganador_actual.white-ganador {
+  /* background: linear-gradient(135deg, rgba(0, 150, 255, 0.3), rgba(0, 200, 255, 0.2)); */
+  border: 3px solid #00d4ff;
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.6), inset 0 0 20px rgba(0, 212, 255, 0.2);
+}
+
+/* CUANDO AMARILLO VA GANANDO */
+.ganador_actual.yellow-ganador {
+  /* background: linear-gradient(135deg, rgba(255, 200, 0, 0.3), rgba(255, 235, 59, 0.2)); */
+  border: 3px solid #ffeb3b;
+  box-shadow: 0 0 10px rgba(255, 235, 59, 0.6), inset 0 0 20px rgba(255, 235, 59, 0.2);
+}
+
+/* CUANDO ESTAN EMPATADOS */
+.ganador_actual.empate {
+  background: linear-gradient(135deg, rgba(100, 100, 100, 0.3), rgba(150, 150, 150, 0.2));
+  border: 3px solid #aaa;
+  box-shadow: 0 0 20px rgba(170, 170, 170, 0.4);
+}
+
+.ganador_actual .ganador_text {
+  margin: 0 0 1vw 0;
+  font-size: 3vw;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.3vw;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(0,153,0,0.8), 0 0 40px rgba(0,153,0,0.4);
+}
+
+.ganador_actual .ganador_info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vw;
+}
+
+.ganador_actual .label_ganador {
+  margin: 0;
+  font-size: 1.5vw;
+  color: #ffeb3b;
+  /* Cuando BLANCO va ganando, el título BLANCO en verde oscuro */
+  .efectividad_player.ganador h4.white {
+    color: #009900 !important;
+  }
+  /* Cuando AMARILLO va ganando, el título AMARILLO en verde oscuro */
+  .efectividad_player.ganador h4.yellow {
+    color: #009900 !important;
+  }
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.15vw;
+}
+
+.ganador_actual .nombre_ganador {
+  margin: 0;
+  font-size: 2.5vw;
+  color: #009900;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.2vw;
 }

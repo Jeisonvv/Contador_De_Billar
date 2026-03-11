@@ -17,7 +17,7 @@ const ScoreManager = (() => {
    * @param {string} idMarcador - ID del marcador acumulado
    * @param {string} playerColor - Color del jugador ("White" o "Yellow")
    */
-  function accumulate(idContador, idMarcador, playerColor) {
+  async function accumulate(idContador, idMarcador, playerColor) {
     // Obtener puntos actuales del contador
     const puntosActuales = parseInt(document.getElementById(idContador).textContent, 10) || 0;
 
@@ -49,22 +49,22 @@ const ScoreManager = (() => {
     document.getElementById(idContador).textContent = 0;
 
     // Guardar cambios en archivos
-    DataManager.saveSetFile(idMarcador, puntosAcumulados);
-    DataManager.saveSetFile(idContador, 0);
-    DataManager.saveGeneralFile(idMarcador, puntosAcumulados);
-    DataManager.saveGeneralFile(idContador, 0);
+    await DataManager.saveSetFile(idMarcador, puntosAcumulados);
+    await DataManager.saveSetFile(idContador, 0);
+    await DataManager.saveGeneralFile(idMarcador, puntosAcumulados);
+    await DataManager.saveGeneralFile(idContador, 0);
   }
 
   /**
    * Inicializa los listeners para acumular puntos
    */
   function initializeListeners() {
-    document.getElementById("buttonWhitePlayerMarcador")?.addEventListener("click", () => {
-      accumulate("Point_White", "whitePlayerMarcador", "White");
+    document.getElementById("buttonWhitePlayerMarcador")?.addEventListener("click", async () => {
+      await accumulate("Point_White", "whitePlayerMarcador", "White");
     });
 
-    document.getElementById("buttonYellowPlayerMarcador")?.addEventListener("click", () => {
-      accumulate("Point_Yellow", "yellowPlayerMarcador", "Yellow");
+    document.getElementById("buttonYellowPlayerMarcador")?.addEventListener("click", async () => {
+      await accumulate("Point_Yellow", "yellowPlayerMarcador", "Yellow");
     });
   }
 

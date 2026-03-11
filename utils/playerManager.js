@@ -11,8 +11,8 @@ const PlayerManager = (() => {
    */
   function initializeListeners() {
     // Escuchar cambios de nombre del jugador blanco
-    document.getElementById("nameWhitePlayer")?.addEventListener("input", (e) => {
-      DataManager.saveGeneralFile("nombre_blanco", e.target.value);
+    document.getElementById("nameWhitePlayer")?.addEventListener("change", async (e) => {
+      await DataManager.saveGeneralFile("nombre_blanco", e.target.value);
       // Actualizar el h4 con el nombre del jugador blanco
       const blancoHeader = document.getElementById("blancoHeader");
       if (blancoHeader) {
@@ -21,13 +21,13 @@ const PlayerManager = (() => {
     });
 
     // Escuchar cambios de handicap del jugador blanco
-    document.getElementById("handicapWhitePlayer")?.addEventListener("input", (e) => {
-      DataManager.saveGeneralFile("handicap_blanco", e.target.value);
+    document.getElementById("handicapWhitePlayer")?.addEventListener("change", async (e) => {
+      await DataManager.saveGeneralFile("handicap_blanco", e.target.value);
     });
 
     // Escuchar cambios de nombre del jugador amarillo
-    document.getElementById("nameYellowPlayer")?.addEventListener("input", (e) => {
-      DataManager.saveGeneralFile("nombre_amarillo", e.target.value);
+    document.getElementById("nameYellowPlayer")?.addEventListener("change", async (e) => {
+      await DataManager.saveGeneralFile("nombre_amarillo", e.target.value);
       // Actualizar el h4 con el nombre del jugador amarillo
       const amarilloHeader = document.getElementById("amarilloHeader");
       if (amarilloHeader) {
@@ -36,8 +36,8 @@ const PlayerManager = (() => {
     });
 
     // Escuchar cambios de handicap del jugador amarillo
-    document.getElementById("handicapYellowPlayer")?.addEventListener("input", (e) => {
-      DataManager.saveGeneralFile("handicap_amarillo", e.target.value);
+    document.getElementById("handicapYellowPlayer")?.addEventListener("change", async (e) => {
+      await DataManager.saveGeneralFile("handicap_amarillo", e.target.value);
     });
 
     // Listener para intercambiar jugadores
@@ -47,7 +47,7 @@ const PlayerManager = (() => {
   /**
    * Intercambia nombres y handicaps de ambos jugadores
    */
-  function exchange() {
+  async function exchange() {
     const whiteName = document.getElementById("nameWhitePlayer");
     const yellowName = document.getElementById("nameYellowPlayer");
     const whiteHandicap = document.getElementById("handicapWhitePlayer");
@@ -74,10 +74,10 @@ const PlayerManager = (() => {
     }
 
     // Guardar los valores intercambiados en archivos
-    DataManager.saveGeneralFile("nombre_blanco", whiteName.value);
-    DataManager.saveGeneralFile("nombre_amarillo", yellowName.value);
-    DataManager.saveGeneralFile("handicap_blanco", whiteHandicap.value);
-    DataManager.saveGeneralFile("handicap_amarillo", yellowHandicap.value);
+    await DataManager.saveGeneralFile("nombre_blanco", whiteName.value);
+    await DataManager.saveGeneralFile("nombre_amarillo", yellowName.value);
+    await DataManager.saveGeneralFile("handicap_blanco", whiteHandicap.value);
+    await DataManager.saveGeneralFile("handicap_amarillo", yellowHandicap.value);
   }
 
   // Public API

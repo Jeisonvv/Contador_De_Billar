@@ -24,7 +24,7 @@ let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 600,
-    height: 600,
+    height: 800,
     icon: path.join(__dirname, 'BillarEnLinea.ico'),
     resizable: false,
     maximizable: false,

@@ -26,15 +26,19 @@ document.addEventListener('DOMContentLoaded', async function() {
   // 4. Inicializar estadísticas (promedios y series)
   StatsManager.initializeListeners();
 
-  // 5. Inicializar reinicio de sets y marcadores
+  // 5. Inicializar dashboard de datos de partida (dinámico)
+  DashboardManager.initializeListeners();
+  DashboardManager.renderDashboard();
+
+  // 6. Inicializar reinicio de sets y marcadores
   ResetManager.initializeListeners();
 
-  // 6. Cargar datos correctos del set actual ANTES de inicializar EffectivenessManager
+  // 7. Cargar datos correctos del set actual ANTES de inicializar EffectivenessManager
   await loadSetDataFromFiles();
 
   console.log("✅ DOM preparado con valores por defecto");
   
-  // 7. Escuchar cambios de set para recargar efectivas y fallidas
+  // 8. Escuchar cambios de set para recargar efectivas y fallidas
   const setSelector = document.getElementById("setSelector");
   if (setSelector) {
     setSelector.addEventListener("change", async () => {
@@ -58,9 +62,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 
   // 10. Limpiar valores por defecto cuando se cierre la ventana
-  window.addEventListener("beforeunload", () => {
+  window.addEventListener("beforeunload", async () => {
     console.log("🔌 Cerrando aplicación - Limpiando valores por defecto...");
-    saveDefaultValuesToFiles();
+    await saveDefaultValuesToFiles();
   });
 
 });
@@ -68,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 /**
  * Guarda valores por defecto en todos los archivos
  */
-function saveDefaultValuesToFiles() {
+async function saveDefaultValuesToFiles() {
   try {
     if (!window.DataManager) return;
 
@@ -77,25 +81,25 @@ function saveDefaultValuesToFiles() {
     const setOriginal = setSelector ? setSelector.value : "set1";
 
     // Guardar en general
-    DataManager.saveGeneralFile("nombre_blanco", "");
-    DataManager.saveGeneralFile("nombre_amarillo", "");
-    DataManager.saveGeneralFile("Point_White", 0);
-    DataManager.saveGeneralFile("Point_Yellow", 0);
+    await DataManager.saveGeneralFile("nombre_blanco", "");
+    await DataManager.saveGeneralFile("nombre_amarillo", "");
+    await DataManager.saveGeneralFile("Point_White", 0);
+    await DataManager.saveGeneralFile("Point_Yellow", 0);
 
     // Guardar valores por defecto en todos los sets
-    sets.forEach((setName) => {
+    for (const setName of sets) {
       if (setSelector) setSelector.value = setName;
       
-      DataManager.saveSetFile("entry", 1);
-      DataManager.saveSetFile("Point_White", 0);
-      DataManager.saveSetFile("Point_Yellow", 0);
-      DataManager.saveSetFile("whitePlayerMarcador", 0);
-      DataManager.saveSetFile("yellowPlayerMarcador", 0);
-      DataManager.saveSetFile("totalEfectivasBlanco", 0);
-      DataManager.saveSetFile("totalEfectivasAmarillo", 0);
-      DataManager.saveSetFile("noCarambola_White", 0);
-      DataManager.saveSetFile("noCarambola_Yellow", 0);
-    });
+      await DataManager.saveSetFile("entry", 1);
+      await DataManager.saveSetFile("Point_White", 0);
+      await DataManager.saveSetFile("Point_Yellow", 0);
+      await DataManager.saveSetFile("whitePlayerMarcador", 0);
+      await DataManager.saveSetFile("yellowPlayerMarcador", 0);
+      await DataManager.saveSetFile("totalEfectivasBlanco", 0);
+      await DataManager.saveSetFile("totalEfectivasAmarillo", 0);
+      await DataManager.saveSetFile("noCarambola_White", 0);
+      await DataManager.saveSetFile("noCarambola_Yellow", 0);
+    }
 
     // Restaurar set original
     if (setSelector) setSelector.value = setOriginal;

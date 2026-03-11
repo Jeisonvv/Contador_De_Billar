@@ -130,57 +130,11 @@
         </div>
       </div>
       
-      <div class="container_efectividad">
-        <div class="efectividad_header">
-          <h3>DATOS DE PARTIDA</h3>
-        </div>
-        <div class="efectividad_content">
-          <div class="efectividad_player">
-            <h4 id="blancoHeader">BLANCO</h4>
-            <div class="efectividad_item">
-              <p class="label">Entradas Efetivas </p>
-              <p class="valor" id="efectivasBlanco">0</p>
-            </div>
-            <div class="efectividad_item">
-              <p class="label">Entradas Fallidas</p>
-              <p class="valor" id="fallidasBlancoDetail">0</p>
-            </div>
-            <div class="efectividad_item">
-              <p class="label">porcentaje de efectividad</p>
-              <p class="valor" id="promedioBlanco">0%</p>
-            </div>
-            <div class="efectividad_item">
-              <p class="label">Promedio Puntos</p>
-              <p class="valor" id="promedio_white_tabla">0</p>
-            </div>
-            <div class="efectividad_item">
-              <p class="valor" id="serieDataBlanco">Serie más alta <span id="highestserieWhiteDisplay">0</span> carambolas en la entrada <span id="entrada_serie_whiteDisplay">0</span></p>
-            </div>
-          </div>
-          <div class="efectividad_player">
-            <h4 id="amarilloHeader">AMARILLO</h4>
-            <div class="efectividad_item">
-              <p class="label">Entradas Efetivas </p>
-              <p class="valor" id="efectivasAmarillo">0</p>
-            </div>
-            <div class="efectividad_item">
-              <p class="label">Entradas Fallidas</p>
-              <p class="valor" id="fallidasAmarilloDetail">0</p>
-            </div>
-            <div class="efectividad_item">
-              <p class="label">porcentaje de efectividad</p>
-              <p class="valor" id="promedioAmarillo">0%</p>
-            </div>
-            <div class="efectividad_item">
-              <p class="label">Promedio Puntos</p>
-              <p class="valor" id="promedio_yellow_tabla">0</p>
-            </div>
-            <div class="efectividad_item">
-              <p class="valor" id="serieDataAmarillo">Serie más alta <span id="highestserieYellowDisplay">0</span> carambolas en la entrada <span id="entrada_serie_yellowDisplay">0</span></p>
-            </div>
-          </div>
-        </div>
+      <div class="container_efectividad" id="containerEfectividad">
+        <!-- Generado dinámicamente por JavaScript -->
       </div>
+
+
       <!-- Contadores acumulativos ocultos para efectivas -->
       <div id="efectivasStorage" style="display: none;">
         <span id="totalEfectivasBlanco">0</span>
@@ -228,6 +182,7 @@
     <script src="utils/counterManager.js"></script>
     <script src="utils/scoreManager.js"></script>
     <script src="utils/statsManager.js"></script>
+    <script src="utils/dashboardManager.js"></script>
     <script src="utils/modalManager.js"></script>
     <script src="utils/resetManager.js"></script>
     

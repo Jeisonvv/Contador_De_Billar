@@ -25,11 +25,11 @@ const CounterManager = (() => {
     const display = document.getElementById(idDisplay);
 
     // Listener para botón de incremento
-    document.getElementById(idBtnMas)?.addEventListener("click", () => {
+    document.getElementById(idBtnMas)?.addEventListener("click", async () => {
       window["valor_" + idDisplay]++;
       display.textContent = window["valor_" + idDisplay];
       
-      saveValue(idDisplay, window["valor_" + idDisplay], esGeneral, guardarEnAmbos);
+      await saveValue(idDisplay, window["valor_" + idDisplay], esGeneral, guardarEnAmbos);
 
       // Si es puntos de un jugador, registrar que es su turno
       if (playerColor && (idDisplay === "Point_White" || idDisplay === "Point_Yellow")) {
@@ -40,17 +40,17 @@ const CounterManager = (() => {
 
       // Si es la entrada, verificar fallidas automáticamente
       if (verificarFallidas && idDisplay === "entry") {
-        checkAndRegisterFailures();
+        await checkAndRegisterFailures();
         updateEntradaDisplay(); // Actualizar display de entrada
       }
     });
 
     // Listener para botón de decremento
-    document.getElementById(idBtnMenos)?.addEventListener("click", () => {
+    document.getElementById(idBtnMenos)?.addEventListener("click", async () => {
       if (window["valor_" + idDisplay] > 0) {
         window["valor_" + idDisplay]--;
         display.textContent = window["valor_" + idDisplay];
-        saveValue(idDisplay, window["valor_" + idDisplay], esGeneral, guardarEnAmbos);
+        await saveValue(idDisplay, window["valor_" + idDisplay], esGeneral, guardarEnAmbos);
 
         // Si es puntos de un jugador, registrar que es su turno
         if (playerColor && (idDisplay === "Point_White" || idDisplay === "Point_Yellow")) {
@@ -64,7 +64,7 @@ const CounterManager = (() => {
    * Verifica y registra fallidas y efectivas cuando se incrementa la entrada
    * Cuenta automáticamente cuando la entrada se incrementa
    */
-  function checkAndRegisterFailures() {
+  async function checkAndRegisterFailures() {
     console.log("▶️ INICIANDO checkAndRegisterFailures()");
     if (!EffectivenessManager) {
       console.error("EffectivenessManager NO EXISTE");
@@ -83,8 +83,8 @@ const CounterManager = (() => {
         puntosAcumulados += whitePoints;
         
         if (marcadorWhite) marcadorWhite.textContent = puntosAcumulados;
-        DataManager.saveSetFile("whitePlayerMarcador", puntosAcumulados);
-        DataManager.saveGeneralFile("whitePlayerMarcador", puntosAcumulados);
+        await DataManager.saveSetFile("whitePlayerMarcador", puntosAcumulados);
+        await DataManager.saveGeneralFile("whitePlayerMarcador", puntosAcumulados);
       }
       
       if (yellowPoints > 0) {
@@ -93,8 +93,8 @@ const CounterManager = (() => {
         puntosAcumulados += yellowPoints;
         
         if (marcadorYellow) marcadorYellow.textContent = puntosAcumulados;
-        DataManager.saveSetFile("yellowPlayerMarcador", puntosAcumulados);
-        DataManager.saveGeneralFile("yellowPlayerMarcador", puntosAcumulados);
+        await DataManager.saveSetFile("yellowPlayerMarcador", puntosAcumulados);
+        await DataManager.saveGeneralFile("yellowPlayerMarcador", puntosAcumulados);
       }
 
       console.log(`📋 ANÁLISIS DE PUNTOS: Blanco=${whitePoints}, Amarillo=${yellowPoints}`);
@@ -108,19 +108,19 @@ const CounterManager = (() => {
       // ✅ BLANCO: Verificar su variable independiente
       if (whiteWasEffective) {
         console.log(`✅ BLANCO EFECTIVA - Se acumularon puntos en esta entrada`);
-        incrementarEfectivas("White");
+        await incrementarEfectivas("White");
       } else {
         console.log(`❌ BLANCO FALLIDA - No se acumularon puntos en esta entrada`);
-        incrementarFallidas("White");
+        await incrementarFallidas("White");
       }
       
       // ✅ AMARILLO: Verificar su variable independiente
       if (yellowWasEffective) {
         console.log(`✅ AMARILLO EFECTIVA - Se acumularon puntos en esta entrada`);
-        incrementarEfectivas("Yellow");
+        await incrementarEfectivas("Yellow");
       } else {
         console.log(`❌ AMARILLO FALLIDA - No se acumularon puntos en esta entrada`);
-        incrementarFallidas("Yellow");
+        await incrementarFallidas("Yellow");
       }
 
       // Resetear puntos para la próxima entrada
@@ -130,8 +130,8 @@ const CounterManager = (() => {
       document.getElementById("Point_Yellow").textContent = 0;
       
       // Guardar los puntos reseteados en los archivos
-      saveValue("Point_White", 0, false, true);
-      saveValue("Point_Yellow", 0, false, true);
+      await saveValue("Point_White", 0, false, true);
+      await saveValue("Point_Yellow", 0, false, true);
 
       // 🔵 RESET DE LAS VARIABLES BOOLEANAS PARA AMBOS JUGADORES
       window.isWhiteEffective = false;
@@ -203,7 +203,7 @@ const CounterManager = (() => {
    * Incrementa el contador de efectivas
    * @param {string} colorJugador - "White" o "Yellow"
    */
-  function incrementarEfectivas(colorJugador) {
+  async function incrementarEfectivas(colorJugador) {
     const colorName = colorJugador === "White" ? "Blanco" : "Amarillo";
     const idEfectivas = `totalEfectivas${colorName}`;
     const elemento = document.getElementById(idEfectivas);
@@ -217,8 +217,8 @@ const CounterManager = (() => {
     elemento.textContent = efectivas;
 
     // Guardar en archivos
-    DataManager.saveSetFile(idEfectivas, efectivas);
-    DataManager.saveGeneralFile(idEfectivas, efectivas);
+    await DataManager.saveSetFile(idEfectivas, efectivas);
+    await DataManager.saveGeneralFile(idEfectivas, efectivas);
     console.log(`✅ Carambola efectiva registrada para ${colorName}: ${efectivas} (ID: ${idEfectivas})`);
   }
 
@@ -226,7 +226,7 @@ const CounterManager = (() => {
    * Incrementa el contador de fallidas
    * @param {string} colorJugador - "White" o "Yellow"
    */
-  function incrementarFallidas(colorJugador) {
+  async function incrementarFallidas(colorJugador) {
     const idFallidas = `noCarambola_${colorJugador}`;
     const elemento = document.getElementById(idFallidas);
     
@@ -241,9 +241,9 @@ const CounterManager = (() => {
     console.log(`📊 Fallidas actuales para ${colorJugador}: ${fallidas}`);
     try {
       console.log(`💾 Intentando guardar ${idFallidas} = ${fallidas} en archivos...`);
-      DataManager.saveSetFile(idFallidas, fallidas);
+      await DataManager.saveSetFile(idFallidas, fallidas);
       console.log(`✅ Guardado en set file: ${idFallidas}`);
-      DataManager.saveGeneralFile(idFallidas, fallidas);
+      await DataManager.saveGeneralFile(idFallidas, fallidas);
       console.log(`✅ Guardado en general file: ${idFallidas}`);
     } catch (err) {
       console.error(`Error al guardar fallida para ${colorJugador}:`, err);
@@ -253,14 +253,14 @@ const CounterManager = (() => {
   /**
    * Guarda el valor del contador según la configuración
    */
-  function saveValue(idDisplay, value, esGeneral, guardarEnAmbos) {
+  async function saveValue(idDisplay, value, esGeneral, guardarEnAmbos) {
     if (guardarEnAmbos) {
-      DataManager.saveSetFile(idDisplay, value);
-      DataManager.saveGeneralFile(idDisplay, value);
+      await DataManager.saveSetFile(idDisplay, value);
+      await DataManager.saveGeneralFile(idDisplay, value);
     } else if (esGeneral) {
-      DataManager.saveGeneralFile(idDisplay, value);
+      await DataManager.saveGeneralFile(idDisplay, value);
     } else {
-      DataManager.saveSetFile(idDisplay, value);
+      await DataManager.saveSetFile(idDisplay, value);
     }
   }
 

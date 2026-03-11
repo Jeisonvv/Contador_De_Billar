@@ -14,7 +14,7 @@ const StatsManager = (() => {
    * @param {string} idPromedio - ID del elemento que muestra el promedio
    * @param {string} archivo - Nombre del archivo donde guardar
    */
-  function calculateAndUpdateAverage(
+  async function calculateAndUpdateAverage(
     idMarcador,
     idPuntos,
     idEntradas,
@@ -29,15 +29,20 @@ const StatsManager = (() => {
     const promedio = Math.round(((marcador + puntos) / entradas) * 1000);
     const promedioTexto = `Prom:  ${promedio}`;
 
-    document.getElementById(idPromedio).textContent = promedio;
-    DataManager.saveGeneralFile(archivo, promedioTexto);
+    // Actualizar elemento si existe
+    const elementoPromedio = document.getElementById(idPromedio);
+    if (elementoPromedio) {
+      elementoPromedio.textContent = promedio;
+    }
+    
+    await DataManager.saveGeneralFile(archivo, promedioTexto);
   }
 
   /**
    * Actualiza el promedio del jugador blanco
    */
-  function updateWhiteAverage() {
-    calculateAndUpdateAverage(
+  async function updateWhiteAverage() {
+    await calculateAndUpdateAverage(
       "whitePlayerMarcador",
       "Point_White",
       "entry",
@@ -49,8 +54,8 @@ const StatsManager = (() => {
   /**
    * Actualiza el promedio del jugador amarillo
    */
-  function updateYellowAverage() {
-    calculateAndUpdateAverage(
+  async function updateYellowAverage() {
+    await calculateAndUpdateAverage(
       "yellowPlayerMarcador",
       "Point_Yellow",
       "entry",
@@ -66,7 +71,7 @@ const StatsManager = (() => {
    * @param {string} identry - ID del contador de entradas
    * @param {string} idserieEntry - ID de la entrada donde ocurrió la serie
    */
-  function updateSeries(idPoint, idSerie, identry, idserieEntry) {
+  async function updateSeries(idPoint, idSerie, identry, idserieEntry) {
     const point = Number(document.getElementById(idPoint).textContent) || 0;
     const serie = Number(document.getElementById(idSerie).textContent) || 0;
     const entrada = Number(document.getElementById(identry).textContent) || 0;
@@ -74,7 +79,7 @@ const StatsManager = (() => {
     if (point > serie) {
       document.getElementById(idSerie).textContent = point;
       document.getElementById(idserieEntry).textContent = entrada;
-      DataManager.saveSetFile(idSerie, point);
+      await DataManager.saveSetFile(idSerie, point);
     }
   }
 
@@ -83,29 +88,29 @@ const StatsManager = (() => {
    */
   function initializeListeners() {
     // Listeners para actualizar promedios del jugador blanco
-    document.getElementById("buttonWhitePlayerMarcador")?.addEventListener("click", updateWhiteAverage);
-    document.getElementById("increase_white")?.addEventListener("click", updateWhiteAverage);
-    document.getElementById("decrease_white")?.addEventListener("click", updateWhiteAverage);
-    document.getElementById("increase_entry")?.addEventListener("click", updateWhiteAverage);
-    document.getElementById("decrease_entry")?.addEventListener("click", updateWhiteAverage);
+    document.getElementById("buttonWhitePlayerMarcador")?.addEventListener("click", async () => await updateWhiteAverage());
+    document.getElementById("increase_white")?.addEventListener("click", async () => await updateWhiteAverage());
+    document.getElementById("decrease_white")?.addEventListener("click", async () => await updateWhiteAverage());
+    document.getElementById("increase_entry")?.addEventListener("click", async () => await updateWhiteAverage());
+    document.getElementById("decrease_entry")?.addEventListener("click", async () => await updateWhiteAverage());
 
     // Listeners para actualizar promedios del jugador amarillo
-    document.getElementById("buttonYellowPlayerMarcador")?.addEventListener("click", updateYellowAverage);
-    document.getElementById("increase_yellow")?.addEventListener("click", updateYellowAverage);
-    document.getElementById("decrease_yellow")?.addEventListener("click", updateYellowAverage);
-    document.getElementById("increase_entry")?.addEventListener("click", updateYellowAverage);
-    document.getElementById("decrease_entry")?.addEventListener("click", updateYellowAverage);
+    document.getElementById("buttonYellowPlayerMarcador")?.addEventListener("click", async () => await updateYellowAverage());
+    document.getElementById("increase_yellow")?.addEventListener("click", async () => await updateYellowAverage());
+    document.getElementById("decrease_yellow")?.addEventListener("click", async () => await updateYellowAverage());
+    document.getElementById("increase_entry")?.addEventListener("click", async () => await updateYellowAverage());
+    document.getElementById("decrease_entry")?.addEventListener("click", async () => await updateYellowAverage());
 
     // Listeners para actualizar series
     ["increase_yellow", "decrease_yellow", "buttonYellowPlayerMarcador"].forEach((id) => {
-      document.getElementById(id)?.addEventListener("click", () => {
-        updateSeries("Point_Yellow", "highestserieYellow", "entry", "entrada_serie_yellow");
+      document.getElementById(id)?.addEventListener("click", async () => {
+        await updateSeries("Point_Yellow", "highestserieYellow", "entry", "entrada_serie_yellow");
       });
     });
 
     ["increase_white", "decrease_white", "buttonWhitePlayerMarcador"].forEach((id) => {
-      document.getElementById(id)?.addEventListener("click", () => {
-        updateSeries("Point_White", "highestserieWhite", "entry", "entrada_serie_white");
+      document.getElementById(id)?.addEventListener("click", async () => {
+        await updateSeries("Point_White", "highestserieWhite", "entry", "entrada_serie_white");
       });
     });
   }
