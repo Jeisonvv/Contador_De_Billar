@@ -131,3 +131,4 @@ ipcMain.handle('load-set-file', (event, setName, fileName) => {
 ipcMain.handle('get-data-path', (event) => {
   return dataDir;
 });
+

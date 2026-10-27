@@ -129,23 +129,37 @@
           <p id="yellowPlayerMarcador">0</p>
         </div>
       </div>
-      <div class="container_promedio">
-        <div class="container_itent_promedio">
-          <div>
-            <p>Serie</p>
-            <p id="highestserieWhite">0</p>
-          </div>
-          <div>
-            <p>Entrada</p>
-            <p id="entrada_serie_white">0</p>
-          </div>
+
+      <div class="container_efectividad" id="containerEfectividad">
+        <!-- Generado dinámicamente por JavaScript -->
+      </div>
+
+
+      <!-- Contadores acumulativos ocultos para efectivas -->
+      <div id="efectivasStorage" style="display: none;">
+        <span id="totalEfectivasBlanco">0</span>
+        <span id="totalEfectivasAmarillo">0</span>
+      </div>
+
+      <!-- Contadores acumulativos ocultos para fallidas -->
+      <div id="fallidasStorage" style="display: none;">
+        <span id="noCarambola_White">0</span>
+        <span id="noCarambola_Yellow">0</span>
+      </div>
+
+      <!-- Contadores para series más altas -->
+      <div id="seriesStorage" style="display: none;">
+        <span id="highestserieWhite">0</span>
+        <span id="entrada_serie_white">0</span>
+        <span id="highestserieYellow">0</span>
+        <span id="entrada_serie_yellow">0</span>
+      </div>
+
+      <div class="resetButton">
+        <div>
+          <button id="resetButtonSet" class="btn-3">Reiniciar set</button>
         </div>
-        <div class="container_itent_promedio item-doble">
-          <div class="itent_promedio">
-            <p>Promedio</p>
-            <p id="promedio_white">0</p>
-          </div>
-          <div class="itent_promedio itent_proedio_2">
+        <div class="itent_promedio itent_proedio_2">
             <label for="setSelector">Set</label>
             <select id="setSelector">
               <option value="set1" selected>Set 1</option>
@@ -155,26 +169,6 @@
               <option value="set5">Set 5</option>
             </select>
           </div>
-          <div class="itent_promedio">
-            <p>Promedio</p>
-            <p id="promedio_yellow">0</p>
-          </div>
-        </div>
-        <div class="container_itent_promedio">
-          <div>
-            <p>Serie</p>
-            <p id="highestserieYellow">0</p>
-          </div>
-          <div>
-            <p>Entrada</p>
-            <p id="entrada_serie_yellow">0</p>
-          </div>
-        </div>
-      </div>
-      <div class="resetButton">
-        <div>
-          <button id="resetButtonSet" class="btn-3">Reiniciar set</button>
-        </div>
         <div>
           <button id="resetButtonMarcador" class="btn-3">Reiniciar marcador</button>
         </div>
@@ -184,9 +178,11 @@
     <!-- Cargar módulos en orden correcto -->
     <script src="utils/dataManager.js"></script>
     <script src="utils/playerManager.js"></script>
+    <script src="utils/effectivenessManager.js"></script>
     <script src="utils/counterManager.js"></script>
     <script src="utils/scoreManager.js"></script>
     <script src="utils/statsManager.js"></script>
+    <script src="utils/dashboardManager.js"></script>
     <script src="utils/modalManager.js"></script>
     <script src="utils/resetManager.js"></script>
     

@@ -18,9 +18,10 @@ const EffectivenessManager = (() => {
    * Cargar estado anterior desde memoria
    */
   function loadPreviousState() {
+    const entryElement = document.getElementById("entry");
     const white = parseInt(document.getElementById("Point_White")?.textContent || 0, 10);
     const yellow = parseInt(document.getElementById("Point_Yellow")?.textContent || 0, 10);
-    const entries = parseInt(document.getElementById("entry")?.textContent || 0, 10);
+    const entries = parseInt(entryElement?.textContent || 0, 10);
 
     previousState = {
       whitePoints: white,
@@ -34,12 +35,14 @@ const EffectivenessManager = (() => {
    * Obtiene el estado actual
    */
   function getCurrentState() {
-    return {
+    const currentState = {
       whitePoints: parseInt(document.getElementById("Point_White")?.textContent || 0, 10),
       yellowPoints: parseInt(document.getElementById("Point_Yellow")?.textContent || 0, 10),
       entries: parseInt(document.getElementById("entry")?.textContent || 0, 10),
       timestamp: Date.now()
     };
+    
+    return currentState;
   }
 
   /**
@@ -55,6 +58,8 @@ const EffectivenessManager = (() => {
     const yellowPointsAdded = currentState.yellowPoints - previousState.yellowPoints;
     const entriesAdded = currentState.entries - previousState.entries;
     
+    console.log(`🧮 Cálculo: entriesAdded = ${currentState.entries} (actual) - ${previousState.entries} (anterior) = ${entriesAdded}`);
+    
     const isEffective = whitePointsAdded > 0 || yellowPointsAdded > 0;
     
     const result = {
@@ -68,7 +73,6 @@ const EffectivenessManager = (() => {
       timestamp: currentState.timestamp
     };
 
-    console.log("📊 Análisis de Tacada:", result);
     return result;
   }
 
@@ -126,11 +130,23 @@ const EffectivenessManager = (() => {
 
   /**
    * Inicializa el monitor de efectividad
-   * Debe llamarse después de cargar el DOM
+   * @param {number} entryValue - Valor opcional de entrada para sincronizar (para evitar timing issues)
    */
-  function initialize() {
-    loadPreviousState();
-    console.log("✅ EffectivenessManager inicializado");
+  function initialize(entryValue = null) {
+    if (entryValue !== null) {
+      // Si se proporciona un valor de entrada explícito, usarlo
+      previousState = {
+        whitePoints: 0,
+        yellowPoints: 0,
+        entries: parseInt(entryValue, 10) || 1,
+        timestamp: Date.now()
+      };
+      console.log(`❓ EffectivenessManager inicializado con entrada explícita: ${entryValue}`);
+    } else {
+      // Si no, leer del DOM
+      loadPreviousState();
+      console.log(`✅ EffectivenessManager inicializado`);
+    }
   }
 
   /**
@@ -152,3 +168,6 @@ const EffectivenessManager = (() => {
     getPreviousState: () => previousState
   };
 })();
+
+// Hacer accesible globalmente
+window.EffectivenessManager = EffectivenessManager;
