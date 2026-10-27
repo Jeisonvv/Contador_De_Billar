@@ -24,7 +24,7 @@ let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 600,
-    height: 800,
+    height: 600,
     icon: path.join(__dirname, 'BillarEnLinea.ico'),
     resizable: false,
     maximizable: false,
@@ -131,3 +131,4 @@ ipcMain.handle('load-set-file', (event, setName, fileName) => {
 ipcMain.handle('get-data-path', (event) => {
   return dataDir;
 });
+

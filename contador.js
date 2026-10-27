@@ -6,7 +6,6 @@
  */
 
 document.addEventListener('DOMContentLoaded', async function() {
-  
   /**
    * Inicializar todos los módulos cuando el DOM esté listo
    */
